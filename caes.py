@@ -119,4 +119,9 @@ results = opt.solve(m, tee=False)
 m.solutions.load_from(results)
 
 # Print results
-print([m.P[t].value for t in T])
+data = {'cmp_P': [m.cmp_P[t].value for t in m.T],
+        'exp_P': [m.exp_P[t].value for t in m.T],
+        'cav_Pi': [m.cav_Pi[t].value for t in m.T]}
+df = pd.DataFrame.from_dict(data)
+
+print(df.head(24))
