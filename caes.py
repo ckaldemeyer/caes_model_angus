@@ -10,10 +10,10 @@ seq = pd.read_csv('sequences.csv')
 # Create model
 m = ConcreteModel()
 
-# Sets
+# Add sets
 m.T = Set(initialize=seq['timestep'].values)
 
-# Parameters
+# Add parameters
 m.a = Param(m.T, initialize=sca.loc['a'].item())
 m.b = Param(m.T, initialize=sca.loc['b'].item())
 m.c = Param(m.T, initialize=sca.loc['c'].item())
@@ -35,7 +35,7 @@ m.cav_Pi_max = Param(m.T, initialize=sca.loc['cav_Pi_max'].item())
 m.mkt_C_el = Param(m.T, initialize=dict(zip(seq['timestep'].values,
                                             seq['mkt_C_el'].values)))
 
-# Variables
+# Add variables
 m.cmp_P = Var(m.T, bounds=(0, sca.loc['cmp_P_max'].item()))
 m.cmp_m = Var(m.T)
 m.cmp_y = Var(m.T, within=Binary)
@@ -46,7 +46,7 @@ m.cav_Pi = Var(m.T, bounds=(sca.loc['cav_Pi_min'].item(),
                             sca.loc['cav_Pi_max'].item()))
 
 
-# Objective
+# Add objective
 def obj_rule(model):
     expr = (sum(m.mkt_C_el[t] * m.cmp_P[t] +
             m.mkt_C_fuel[t] * m.exp_Q_in[t] -
@@ -56,7 +56,7 @@ def obj_rule(model):
 m.profit = Objective(sense=minimize, rule=obj_rule)
 
 
-# Constraints
+# Add constraints
 def cmp_area_rule(model, t):
     return(m.cmp_P[t] == m.a * m.cmp_m[t] + m.b * m.cav_Pi[t])
 m.cmp_area = Constraint(m.T, rule=cmp_area_rule)
@@ -109,10 +109,10 @@ def exp_fuel_rule_2(model, t):
 m.exp_fuel_2 = Constraint(m.T, rule=exp_fuel_rule_2)
 
 
-# Define Solver
+# Set solver
 opt = SolverFactory('gurobi')
 
-# Solve the model
+# Solve model
 results = opt.solve(m, tee=False)
 
 # Load results back into model
