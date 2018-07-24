@@ -32,8 +32,8 @@ m.exp_Eta_comb = Param(m.T, initialize=sca.loc['exp_Eta_comb'].item())
 m.cav_m_0 = Param(m.T, initialize=sca.loc['cav_m_0'].item())
 m.cav_Pi_min = Param(m.T, initialize=sca.loc['cav_Pi_min'].item())
 m.cav_Pi_max = Param(m.T, initialize=sca.loc['cav_Pi_max'].item())
-m.mkt_C_el = Param(
-    m.T, initialize=dict(zip(seq['timestep'].values, seq['mkt_C_el'].values)))
+m.mkt_C_el = Param(m.T, initialize=dict(zip(seq['timestep'].values,
+                                            seq['mkt_C_el'].values)))
 
 # Variables
 m.cmp_P = Var(m.T, bounds=(0, sca.loc['cmp_P_max'].item()))
@@ -115,7 +115,7 @@ opt = SolverFactory('gurobi')
 # Solve the model
 results = opt.solve(m, tee=False)
 
-# # Load results back into model
+# Load results back into model
 m.solutions.load_from(results)
 
 # Print results
