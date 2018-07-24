@@ -13,7 +13,7 @@ m = ConcreteModel()
 # Sets
 m.T = Set(initialize=seq['timestep'].values)
 
-# Params
+# Parameters
 m.a = Param(m.T, initialize=sca.loc['a'].item())
 m.b = Param(m.T, initialize=sca.loc['b'].item())
 m.c = Param(m.T, initialize=sca.loc['c'].item())
@@ -29,11 +29,18 @@ m.exp_q_in_cp = Param(m.T, initialize=sca.loc['exp_q_in_cp'].item())
 m.cav_m_0 = Param(m.T, initialize=sca.loc['cav_m_0'].item())
 m.cav_Pi_min = Param(m.T, initialize=sca.loc['cav_Pi_min'].item())
 m.cav_Pi_max = Param(m.T, initialize=sca.loc['cav_Pi_max'].item())
-m.mkt_C_el = Param(m.T, initialize=dict(
-    zip(seq['timestep'].values, seq['mkt_C_el'].values)))
+m.mkt_C_el = Param(
+    m.T, initialize=dict(zip(seq['timestep'].values, seq['mkt_C_el'].values)))
 
 # Variables
-m.P = Var(m.T, bounds=(0, 100))
+m.cmp_P = Var(m.T, bounds=(0, sca.loc['cmp_P_max'].item()))
+m.cmp_m = Var(m.T)
+m.cmp_y = Var(m.T, within=Binary)
+m.exp_Q_in = Var(m.T, bounds=(0, sca.loc['exp_Q_in_max'].item()))
+m.exp_m = Var(m.T)
+m.exp_y = Var(m.T, within=Binary)
+m.cav_Pi = Var(m.T)
+
 
 # Objective
 def obj_rule(model):
