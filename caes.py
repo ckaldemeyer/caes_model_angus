@@ -17,8 +17,10 @@ m = po.ConcreteModel()
 m.T = po.Set(initialize=seq['timestep'].values)
 
 # Add parameters
+m.a0 = po.Param(m.T, initialize=sca.loc['a0'].item())
 m.a = po.Param(m.T, initialize=sca.loc['a'].item())
 m.b = po.Param(m.T, initialize=sca.loc['b'].item())
+m.c0 = po.Param(m.T, initialize=sca.loc['c0'].item())
 m.c = po.Param(m.T, initialize=sca.loc['c'].item())
 m.d = po.Param(m.T, initialize=sca.loc['d'].item())
 m.cmp_P_max = po.Param(m.T, initialize=sca.loc['cmp_P_max'].item())

@@ -11,7 +11,7 @@ def obj_rule(model):
 
 # Add constraint rules
 def cmp_area_rule(model, t):
-    return(m.cmp_P[t] == m.a * m.cmp_m[t] + m.b * m.cav_Pi[t])
+    return(m.cmp_P[t] == m.a0 + m.a * m.cmp_m[t] + m.b * m.cav_Pi[t])
 
 
 def cav_pi_rule(model, t):
@@ -20,7 +20,7 @@ def cav_pi_rule(model, t):
 
 
 def exp_area_rule(model, t):
-    return(m.exp_P[t] == m.c * m.exp_m[t] + m.d * m.cav_Pi[t])
+    return(m.exp_P[t] == m.c0 + m.c * m.exp_m[t] + m.d * m.cav_Pi[t])
 
 
 def cmp_p_range_rule_1(model, t):
