@@ -36,14 +36,17 @@ m.mkt_C_el = Param(m.T, initialize=dict(zip(seq['timestep'].values,
                                             seq['mkt_C_el'].values)))
 
 # Add variables
-m.cmp_P = Var(m.T, bounds=(0, sca.loc['cmp_P_max'].item()))
-m.cmp_m = Var(m.T)
-m.cmp_y = Var(m.T, within=Binary)
-m.exp_Q = Var(m.T, bounds=(0, sca.loc['exp_max'].item()))
-m.exp_m = Var(m.T)
-m.exp_y = Var(m.T, within=Binary)
-m.cav_Pi = Var(m.T, bounds=(sca.loc['cav_Pi_min'].item(),
-                            sca.loc['cav_Pi_max'].item()))
+m.cmp_P = Var(m.T, domain=NonNegativeReals,
+              bounds=(0, sca.loc['cmp_P_max'].item()))
+m.cmp_m = Var(m.T, domain=NonNegativeReals)
+m.cmp_y = Var(m.T, domain=Binary)
+m.exp_Q = Var(m.T, domain=NonNegativeReals,
+              bounds=(0, sca.loc['exp_max'].item()))
+m.exp_m = Var(m.T, domain=NonNegativeReals)
+m.exp_y = Var(m.T, domain=Binary)
+m.cav_Pi = Var(m.T, domain=NonNegativeReals,
+               bounds=(sca.loc['cav_Pi_min'].item(),
+                       sca.loc['cav_Pi_max'].item()))
 
 
 # Add objective
