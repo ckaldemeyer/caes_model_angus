@@ -14,6 +14,10 @@ def cmp_area_rule(m, t):
     return(m.cmp_P[t] == m.a0 + m.a * m.cmp_m[t] + m.b * m.cav_Pi[t])
 
 
+def cav_pi_0_rule(m, t):
+    return(m.cav_Pi[1] == m.cav_Pi_0)
+
+
 def cav_pi_rule(m, t):
     return(m.cav_Pi[t] == m.cav_Pi[t] +
            1/m.cav_m_0 * (m.cmp_m[t] - m.exp_m[t]))

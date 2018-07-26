@@ -9,13 +9,13 @@ from pyomo.opt import SolverFactory
 
 # Load data
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences.csv').astype(np.float64)
+seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).iloc[0:2]
 
 # Create model
 m = po.ConcreteModel()
 
 # Add sets
-m.T = po.Set(initialize=seq['timestep'].values)
+m.T = po.Set(initialize=seq.index.values)
 
 # Add parameters
 m.a0 = po.Param(initialize=sca.loc['a0'].item())
@@ -36,11 +36,12 @@ m.exp_cp = po.Param(initialize=sca.loc['exp_cp'].item())
 m.exp_Delta_T = po.Param(initialize=sca.loc['exp_Delta_T'].item())
 m.exp_Eta_comb = po.Param(initialize=sca.loc['exp_Eta_comb'].item())
 m.cav_m_0 = po.Param(initialize=sca.loc['cav_m_0'].item())
+m.cav_Pi_0 = po.Param(initialize=sca.loc['cav_Pi_0'].item())
 m.cav_Pi_min = po.Param(initialize=sca.loc['cav_Pi_min'].item())
 m.cav_Pi_max = po.Param(initialize=sca.loc['cav_Pi_max'].item())
-m.mkt_C_el = po.Param(m.T, initialize=dict(zip(seq['timestep'].values,
+m.mkt_C_el = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                seq['mkt_C_el'].values)))
-m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq['timestep'].values,
+m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                  seq['mkt_C_fuel'].values)))
 
 
@@ -64,6 +65,7 @@ m.profit = po.Objective(sense=po.minimize, rule=ru.obj_rule)
 
 # Add constraints
 m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
+#m.cav_pi_0 = po.Constraint(m.T, rule=ru.cav_pi_0_rule)
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi_rule)
 m.exp_area = po.Constraint(m.T, rule=ru.exp_area_rule)
 m.cmp_p_range_1 = po.Constraint(m.T, rule=ru.cmp_p_range_rule_1)
@@ -73,6 +75,9 @@ m.exp_p_range_2 = po.Constraint(m.T, rule=ru.exp_p_range_rule_2)
 m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
 #m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
 #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
+
+# Print model
+m.pprint(1)
 
 # Set solver
 opt = SolverFactory('gurobi')
