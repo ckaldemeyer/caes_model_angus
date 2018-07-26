@@ -1,9 +1,17 @@
 """Objective and constraint rules for Compressed Air Energy Storages (CAES)."""
 
+
 # Add objective rules
 def obj_rule(m):
     expr = (sum(m.mkt_C_el[t] * m.cmp_P[t] +
                 m.mkt_C_fuel[t] * m.exp_Q[t] -
+                m.mkt_C_el[t] * m.exp_P[t]
+            for t in m.T))
+    return expr
+
+
+def obj_test_rule(m):
+    expr = (sum(m.mkt_C_el[t] * m.cmp_P[t] -
                 m.mkt_C_el[t] * m.exp_P[t]
             for t in m.T))
     return expr
@@ -14,13 +22,12 @@ def cmp_area_rule(m, t):
     return(m.cmp_P[t] == m.a0 + m.a * m.cmp_m[t] + m.b * m.cav_Pi[t])
 
 
-def cav_pi_0_rule(m, t):
-    return(m.cav_Pi[1] == m.cav_Pi_0)
-
-
 def cav_pi_rule(m, t):
-    return(m.cav_Pi[t] == m.cav_Pi[t] +
-           1/m.cav_m_0 * (m.cmp_m[t] - m.exp_m[t]))
+    if t != min(m.T) and t != max(m.T):
+        return(m.cav_Pi[t] == m.cav_Pi[t-1] +
+               1/m.cav_m_0 * (m.cmp_m[t] - m.exp_m[t]))
+    else:
+        return(m.cav_Pi[t] == m.cav_Pi_0)
 
 
 def exp_area_rule(m, t):

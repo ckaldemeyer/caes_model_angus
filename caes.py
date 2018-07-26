@@ -9,7 +9,7 @@ from pyomo.opt import SolverFactory
 
 # Load data
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).iloc[0:2]
+seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:3]
 
 # Create model
 m = po.ConcreteModel()
@@ -47,11 +47,13 @@ m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
 
 # Add variables
 m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
-                 bounds=(0, sca.loc['cmp_P_max'].item()))
+                 bounds=(sca.loc['cmp_P_max'].item(),
+                         sca.loc['cmp_P_max'].item()))
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_y = po.Var(m.T, domain=po.Binary)
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
-                 bounds=(0, sca.loc['exp_P_max'].item()))
+                 bounds=(sca.loc['exp_P_min'].item(),
+                         sca.loc['exp_P_max'].item()))
 m.exp_Q = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_y = po.Var(m.T, domain=po.Binary)
@@ -61,7 +63,8 @@ m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals,
 
 
 # Add objective
-m.profit = po.Objective(sense=po.minimize, rule=ru.obj_rule)
+#m.profit = po.Objective(sense=po.minimize, rule=ru.obj_rule)
+m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test_rule)
 
 # Add constraints
 m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
@@ -74,16 +77,16 @@ m.exp_p_range_1 = po.Constraint(m.T, rule=ru.exp_p_range_rule_1)
 m.exp_p_range_2 = po.Constraint(m.T, rule=ru.exp_p_range_rule_2)
 m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
 #m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
-#m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
+ #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
 
-# Print model
-m.pprint(1)
+# Print model (select only a few timesteps)
+m.pprint()
 
 # Set solver
 opt = SolverFactory('gurobi')
 
 # Solve model
-results = opt.solve(m, tee=False)
+results = opt.solve(m, tee=True)
 
 # Load results back into model
 m.solutions.load_from(results)
