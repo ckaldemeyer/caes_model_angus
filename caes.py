@@ -10,7 +10,7 @@ from pyomo.opt import SolverFactory
 
 # Load data
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:48]
+seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:6]
 
 # Create model
 m = po.ConcreteModel()
@@ -68,6 +68,9 @@ m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals,
 m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test_rule)
 
 # Add constraints
+#m.cmp_mc = po.Constraint(m.T, rule=ru.cmp_mc_rule)
+#m.exp_mc = po.Constraint(m.T, rule=ru.exp_mc_rule)
+
 m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi_rule)
 m.exp_area = po.Constraint(m.T, rule=ru.exp_area_rule)
@@ -75,18 +78,18 @@ m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max_rule)
 m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min_rule)
 m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max_rule)
 m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min_rule)
-#m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
-m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
+m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
+#m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
 #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
 
 # Print model (select only a few timesteps)
-m.pprint()
+#m.pprint()
 
 # Set solver
 opt = SolverFactory('gurobi')
 
 # Solve model
-results = opt.solve(m, tee=True)
+results = opt.solve(m, tee=False)
 
 # Load results back into model
 m.solutions.load_from(results)
@@ -94,12 +97,14 @@ m.solutions.load_from(results)
 # Print results
 data = {'cmp_P': [m.cmp_P[t].value for t in m.T],
         'exp_P': [m.exp_P[t].value for t in m.T],
-        'exp_Q': [m.exp_P[t].value for t in m.T],
+        #'exp_Q': [m.exp_P[t].value for t in m.T],
         'cav_Pi': [m.cav_Pi[t].value for t in m.T],
         'cmp_m': [m.cmp_m[t].value for t in m.T],
         'exp_m': [m.exp_m[t].value for t in m.T]}
 df = pd.DataFrame.from_dict(data)
 
-df.plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
-plt.tight_layout()
-plt.show()
+print(df)
+
+# df.plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
+# plt.tight_layout()
+# plt.show()
