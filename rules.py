@@ -25,7 +25,7 @@ def cmp_area_rule(m, t):
 def cav_pi_rule(m, t):
     if t != min(m.T) and t != max(m.T):
         return(m.cav_Pi[t] == m.cav_Pi[t-1] +
-               1/m.cav_m_0 * (m.cmp_m[t] - m.exp_m[t]))
+               3600/m.cav_m_0 * (m.cmp_m[t] - m.exp_m[t]))
     else:
         return(m.cav_Pi[t] == m.cav_Pi_0)
 
@@ -34,20 +34,20 @@ def exp_area_rule(m, t):
     return(m.exp_P[t] == m.c0 + m.c * m.exp_m[t] + m.d * m.cav_Pi[t])
 
 
-def cmp_p_range_rule_1(m, t):
+def cmp_p_range_max_rule(m, t):
     return(m.cmp_P[t] <= m.cmp_y[t] * m.cmp_P_max)
 
 
-def cmp_p_range_rule_2(m, t):
-    return(m.cmp_y[t] * m.cmp_P_min >= m.cmp_P[t])
+def cmp_p_range_min_rule(m, t):
+    return(m.cmp_P[t] >= m.cmp_y[t] * m.cmp_P_min)
 
 
-def exp_p_range_rule_1(m, t):
+def exp_p_range_max_rule(m, t):
     return(m.exp_P[t] <= m.exp_y[t] * m.exp_P_max)
 
 
-def exp_p_range_rule_2(m, t):
-    return(m.exp_y[t] * m.exp_P_min >= m.exp_P[t])
+def exp_p_range_min_rule(m, t):
+    return(m.exp_P[t] >= m.exp_y[t] * m.exp_P_min)
 
 
 def cmp_exp_excl_rule(m, t):

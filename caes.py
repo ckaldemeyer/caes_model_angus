@@ -4,12 +4,13 @@ import numpy as np
 import pandas as pd
 import rules as ru
 import pyomo.environ as po
+import matplotlib.pyplot as plt
 from pyomo.opt import SolverFactory
 
 
 # Load data
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:3]
+seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:48]
 
 # Create model
 m = po.ConcreteModel()
@@ -47,7 +48,7 @@ m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
 
 # Add variables
 m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
-                 bounds=(sca.loc['cmp_P_max'].item(),
+                 bounds=(sca.loc['cmp_P_min'].item(),
                          sca.loc['cmp_P_max'].item()))
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_y = po.Var(m.T, domain=po.Binary)
@@ -68,14 +69,13 @@ m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test_rule)
 
 # Add constraints
 m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
-#m.cav_pi_0 = po.Constraint(m.T, rule=ru.cav_pi_0_rule)
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi_rule)
 m.exp_area = po.Constraint(m.T, rule=ru.exp_area_rule)
-m.cmp_p_range_1 = po.Constraint(m.T, rule=ru.cmp_p_range_rule_1)
-m.cmp_p_range_2 = po.Constraint(m.T, rule=ru.cmp_p_range_rule_2)
-m.exp_p_range_1 = po.Constraint(m.T, rule=ru.exp_p_range_rule_1)
-m.exp_p_range_2 = po.Constraint(m.T, rule=ru.exp_p_range_rule_2)
-m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
+m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max_rule)
+m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min_rule)
+m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max_rule)
+m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min_rule)
+#m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
 #m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
  #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
 
@@ -97,4 +97,5 @@ data = {'cmp_P': [m.cmp_P[t].value for t in m.T],
         'cav_Pi': [m.cav_Pi[t].value for t in m.T]}
 df = pd.DataFrame.from_dict(data)
 
-print(df.head(24))
+df.plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
+plt.show()

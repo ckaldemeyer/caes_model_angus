@@ -7,8 +7,8 @@ c,2.84
 d,-0.68
 cmp_P_max,60
 cmp_P_min,20
-exp_P_max,321
-exp_P_min,100
+exp_P_max,60
+exp_P_min,20
 exp_Eta_ex,0.72
 exp_T_0,288.15
 exp_R,287
@@ -19,4 +19,4 @@ exp_Eta_comb,0.9
 cav_m_0,428734.4
 cav_Pi_min,40
 cav_Pi_max,60
-cav_Pi_0,50
+cav_Pi_0,40
