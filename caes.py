@@ -76,8 +76,8 @@ m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min_rule)
 m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max_rule)
 m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min_rule)
 #m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
-#m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
- #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
+m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
+#m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
 
 # Print model (select only a few timesteps)
 m.pprint()
@@ -94,6 +94,7 @@ m.solutions.load_from(results)
 # Print results
 data = {'cmp_P': [m.cmp_P[t].value for t in m.T],
         'exp_P': [m.exp_P[t].value for t in m.T],
+        'exp_Q': [m.exp_P[t].value for t in m.T],
         'cav_Pi': [m.cav_Pi[t].value for t in m.T],
         'cmp_m': [m.cmp_m[t].value for t in m.T],
         'exp_m': [m.exp_m[t].value for t in m.T]}
