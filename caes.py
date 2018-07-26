@@ -94,8 +94,11 @@ m.solutions.load_from(results)
 # Print results
 data = {'cmp_P': [m.cmp_P[t].value for t in m.T],
         'exp_P': [m.exp_P[t].value for t in m.T],
-        'cav_Pi': [m.cav_Pi[t].value for t in m.T]}
+        'cav_Pi': [m.cav_Pi[t].value for t in m.T],
+        'cmp_m': [m.cmp_m[t].value for t in m.T],
+        'exp_m': [m.exp_m[t].value for t in m.T]}
 df = pd.DataFrame.from_dict(data)
 
 df.plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
+plt.tight_layout()
 plt.show()
