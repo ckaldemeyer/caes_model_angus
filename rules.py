@@ -19,7 +19,8 @@ def obj_test_rule(m):
 
 # Add constraint rules
 def cmp_area_rule(m, t):
-    return(m.cmp_P[t] == m.a0 + m.a * m.cmp_m[t] + m.b * m.cav_Pi[t])
+    return(m.cmp_P[t] == (
+        m.a0 + m.a * m.cmp_m[t] + m.b * m.cav_Pi[t]) * m.cmp_y[t])
 
 
 def cav_pi_rule(m, t):
@@ -31,7 +32,8 @@ def cav_pi_rule(m, t):
 
 
 def exp_area_rule(m, t):
-    return(m.exp_P[t] == m.c0 + m.c * m.exp_m[t] + m.d * m.cav_Pi[t])
+    return(m.exp_P[t] == (
+        m.c0 + m.c * m.exp_m[t] + m.d * m.cav_Pi[t]) * m.cmp_y[t])
 
 
 def cmp_p_range_max_rule(m, t):
@@ -55,10 +57,11 @@ def cmp_exp_excl_rule(m, t):
 
 
 def exp_fuel_rule_1(m, t):
-    return(m.exp_Q[t] == m.exp_P[t] / m.exp_Eta_ex -
-           m.exp_m[t] * m.exp_T_0 * m.exp_R * m.exp_ln)
+    return(m.exp_Q[t] == (
+        m.exp_P[t] / m.exp_Eta_ex -
+        m.exp_m[t] * m.exp_T_0 * m.exp_R * m.exp_ln))
 
 
 def exp_fuel_rule_2(m, t):
-    return(m.exp_Q[t] == m.exp_m[t] * m.exp_cp *
-           m.exp_Delta_T / m.exp_Eta_comb)
+    return(m.exp_Q[t] == (
+        m.exp_m[t] * m.exp_cp * m.exp_Delta_T / m.exp_Eta_comb))
