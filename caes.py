@@ -10,7 +10,7 @@ from pyomo.opt import SolverFactory
 
 # Load data
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:6]
+seq = pd.read_csv('sequences.csv', index_col=0).astype(np.float64).loc[1:24]
 
 # Create model
 m = po.ConcreteModel()
@@ -27,8 +27,10 @@ m.c = po.Param(initialize=sca.loc['c'].item())
 m.d = po.Param(initialize=sca.loc['d'].item())
 m.cmp_P_max = po.Param(initialize=sca.loc['cmp_P_max'].item())
 m.cmp_P_min = po.Param(initialize=sca.loc['cmp_P_min'].item())
+m.cmp_m_max = po.Param(initialize=sca.loc['cmp_m_max'].item())
 m.exp_P_max = po.Param(initialize=sca.loc['exp_P_max'].item())
 m.exp_P_min = po.Param(initialize=sca.loc['exp_P_min'].item())
+m.exp_m_max = po.Param(initialize=sca.loc['exp_m_max'].item())
 m.exp_Eta_ex = po.Param(initialize=sca.loc['exp_Eta_ex'].item())
 m.exp_T_0 = po.Param(initialize=sca.loc['exp_T_0'].item())
 m.exp_R = po.Param(initialize=sca.loc['exp_R'].item())
@@ -52,6 +54,8 @@ m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
                          sca.loc['cmp_P_max'].item()))
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_y = po.Var(m.T, domain=po.Binary)
+m.cav_z = po.Var(m.T, domain=po.NonNegativeReals,
+                 bounds=(0, sca.loc['cav_Pi_max'].item()))
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(sca.loc['exp_P_min'].item(),
                          sca.loc['exp_P_max'].item()))
@@ -68,17 +72,21 @@ m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals,
 m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test_rule)
 
 # Add constraints
-#m.cmp_mc = po.Constraint(m.T, rule=ru.cmp_mc_rule)
-#m.exp_mc = po.Constraint(m.T, rule=ru.exp_mc_rule)
-
-m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
+m.cav_z1 = po.Constraint(m.T, rule=ru.cav_z1_rule)
+m.cav_z2 = po.Constraint(m.T, rule=ru.cav_z2_rule)
+m.cav_z3 = po.Constraint(m.T, rule=ru.cav_z3_rule)
+m.cav_z4 = po.Constraint(m.T, rule=ru.cav_z4_rule)
+m.cav_z5 = po.Constraint(m.T, rule=ru.cav_z5_rule)
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi_rule)
-m.exp_area = po.Constraint(m.T, rule=ru.exp_area_rule)
-m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max_rule)
+m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
 m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min_rule)
-m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max_rule)
+m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max_rule)
+m.cmp_m_range_max = po.Constraint(m.T, rule=ru.cmp_m_range_max_rule)
+m.exp_area = po.Constraint(m.T, rule=ru.exp_area_rule)
 m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min_rule)
-m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
+m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max_rule)
+m.exp_m_range_max = po.Constraint(m.T, rule=ru.exp_m_range_max_rule)
+#m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
 #m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
 #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
 

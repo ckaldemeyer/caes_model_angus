@@ -17,18 +17,41 @@ def obj_test_rule(m):
     return expr
 
 
-# Add constraint rules
-def cmp_mc_rule(m, t):
-    return(m.cmp_m[t] * m.cmp_y[t] == m.cmp_P[t] * m.cmp_y[t])
+def cmp_p_range_min_rule(m, t):
+    return(m.cmp_P[t] >= m.cmp_y[t] * m.cmp_P_min)
 
 
-def exp_mc_rule(m, t):
-    return(m.exp_m[t] * m.exp_y[t] == m.exp_P[t] * m.exp_y[t])
+def cmp_p_range_max_rule(m, t):
+    return(m.cmp_P[t] <= m.cmp_y[t] * m.cmp_P_max)
+
+
+def cmp_m_range_max_rule(m, t):
+    return(m.cmp_m[t] <= m.cmp_y[t] * m.cmp_m_max)
 
 
 def cmp_area_rule(m, t):
     return(m.cmp_m[t] == (
-        m.a0 + m.a * m.cmp_P[t] + m.b * m.cav_Pi[t]))
+        m.a0 + m.a * m.cmp_P[t] + m.b * m.cav_z[t]))
+
+
+def cav_z1_rule(m, t):
+    return(m.cav_z[t] >= m.cav_Pi_min * m.cmp_y[t])
+
+
+def cav_z2_rule(m, t):
+    return(m.cav_z[t] <= m.cav_Pi_max * m.cmp_y[t])
+
+
+def cav_z3_rule(m, t):
+    return(m.cav_z[t] >= m.cav_Pi[t] - (1 - m.cmp_y[t]) * m.cav_Pi_max)
+
+
+def cav_z4_rule(m, t):
+    return(m.cav_z[t] <= m.cav_Pi[t] - (1 - m.cmp_y[t]) * m.cav_Pi_min)
+
+
+def cav_z5_rule(m, t):
+    return(m.cav_z[t] <= m.cav_Pi[t] + (1 - m.cmp_y[t]) * m.cav_Pi_max)
 
 
 def cav_pi_rule(m, t):
@@ -39,25 +62,21 @@ def cav_pi_rule(m, t):
         return(m.cav_Pi[t] == m.cav_Pi_0)
 
 
-def exp_area_rule(m, t):
-    return(m.exp_m[t] == (
-        m.c0 + m.c * m.exp_P[t] + m.d * m.cav_Pi[t]))
-
-
-def cmp_p_range_max_rule(m, t):
-    return(m.cmp_P[t] <= m.cmp_y[t] * m.cmp_P_max)
-
-
-def cmp_p_range_min_rule(m, t):
-    return(m.cmp_P[t] >= m.cmp_y[t] * m.cmp_P_min)
+def exp_p_range_min_rule(m, t):
+    return(m.exp_P[t] >= m.exp_y[t] * m.exp_P_min)
 
 
 def exp_p_range_max_rule(m, t):
     return(m.exp_P[t] <= m.exp_y[t] * m.exp_P_max)
 
 
-def exp_p_range_min_rule(m, t):
-    return(m.exp_P[t] >= m.exp_y[t] * m.exp_P_min)
+def exp_m_range_max_rule(m, t):
+    return(m.exp_m[t] <= m.exp_y[t] * m.exp_m_max)
+
+
+def exp_area_rule(m, t):
+    return(m.exp_m[t] == (
+        m.c0 + m.c * m.exp_P[t] + m.d * m.cav_z[t]))
 
 
 def cmp_exp_excl_rule(m, t):
