@@ -113,5 +113,9 @@ def exp_fuel_2(m, t):
 def cmp_exp_excl(m, t):
     return(m.cmp_y[t] + m.exp_y[t] <= 1)
 
+
 def test(m, t):
-    return(m.cmp_P[t] >= m.cmp_y[t] * m.cmp_P_min)
+    if t > 3 and t < 5:
+        return(m.cmp_y[t] == 0)
+    else:
+        return po.Constraint.Skip

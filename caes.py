@@ -96,7 +96,7 @@ m.exp_m_range_max = po.Constraint(m.T, rule=ru.exp_m_range_max)
 #m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
 #m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_1)
 #m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_2)
-m.test = po.Constraint(m.T, rule=ru.test)
+#m.test = po.Constraint(m.T, rule=ru.test)
 
 # Print model (select only a few timesteps)
 #m.pprint()
