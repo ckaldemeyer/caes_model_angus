@@ -54,7 +54,7 @@ m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
                          sca.loc['cmp_P_max'].item()))
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_y = po.Var(m.T, domain=po.Binary)
-m.cav_z = po.Var(m.T, domain=po.NonNegativeReals,
+m.cmp_z = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca.loc['cav_Pi_max'].item()))
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(sca.loc['exp_P_min'].item(),
@@ -62,33 +62,41 @@ m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
 m.exp_Q = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_y = po.Var(m.T, domain=po.Binary)
+m.exp_z = po.Var(m.T, domain=po.NonNegativeReals,
+                 bounds=(0, sca.loc['cav_Pi_max'].item()))
 m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals,
                   bounds=(sca.loc['cav_Pi_min'].item(),
                           sca.loc['cav_Pi_max'].item()))
 
 
 # Add objective
-#m.profit = po.Objective(sense=po.minimize, rule=ru.obj_rule)
-m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test_rule)
+#m.profit = po.Objective(sense=po.minimize, rule=ru.obj)
+m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test)
 
 # Add constraints
-m.cav_z1 = po.Constraint(m.T, rule=ru.cav_z1_rule)
-m.cav_z2 = po.Constraint(m.T, rule=ru.cav_z2_rule)
-m.cav_z3 = po.Constraint(m.T, rule=ru.cav_z3_rule)
-m.cav_z4 = po.Constraint(m.T, rule=ru.cav_z4_rule)
-m.cav_z5 = po.Constraint(m.T, rule=ru.cav_z5_rule)
-m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi_rule)
-m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area_rule)
-m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min_rule)
-m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max_rule)
-m.cmp_m_range_max = po.Constraint(m.T, rule=ru.cmp_m_range_max_rule)
-m.exp_area = po.Constraint(m.T, rule=ru.exp_area_rule)
-m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min_rule)
-m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max_rule)
-m.exp_m_range_max = po.Constraint(m.T, rule=ru.exp_m_range_max_rule)
-#m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl_rule)
-#m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_rule_1)
-#m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_rule_2)
+m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi)
+m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
+m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
+m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
+m.cmp_z4 = po.Constraint(m.T, rule=ru.cmp_z4)
+m.cmp_z5 = po.Constraint(m.T, rule=ru.cmp_z5)
+m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area)
+m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min)
+m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max)
+m.cmp_m_range_max = po.Constraint(m.T, rule=ru.cmp_m_range_max)
+m.exp_z1 = po.Constraint(m.T, rule=ru.exp_z1)
+m.exp_z2 = po.Constraint(m.T, rule=ru.exp_z2)
+m.exp_z3 = po.Constraint(m.T, rule=ru.exp_z3)
+m.exp_z4 = po.Constraint(m.T, rule=ru.exp_z4)
+m.exp_z5 = po.Constraint(m.T, rule=ru.exp_z5)
+m.exp_area = po.Constraint(m.T, rule=ru.exp_area)
+m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min)
+m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max)
+m.exp_m_range_max = po.Constraint(m.T, rule=ru.exp_m_range_max)
+#m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
+#m.exp_fuel_1 = po.Constraint(m.T, rule=ru.exp_fuel_1)
+#m.exp_fuel_2 = po.Constraint(m.T, rule=ru.exp_fuel_2)
+m.test = po.Constraint(m.T, rule=ru.test)
 
 # Print model (select only a few timesteps)
 #m.pprint()
@@ -104,12 +112,17 @@ m.solutions.load_from(results)
 
 # Print results
 data = {'cmp_P': [m.cmp_P[t].value for t in m.T],
+        'cmp_y': [m.cmp_y[t].value for t in m.T],
         'exp_P': [m.exp_P[t].value for t in m.T],
-        #'exp_Q': [m.exp_P[t].value for t in m.T],
+        'exp_y': [m.exp_y[t].value for t in m.T],
+        'exp_Q': [m.exp_P[t].value for t in m.T],
         'cav_Pi': [m.cav_Pi[t].value for t in m.T],
+        'cmp_z': [m.cmp_z[t].value for t in m.T],
+        'exp_z': [m.exp_z[t].value for t in m.T],
         'cmp_m': [m.cmp_m[t].value for t in m.T],
         'exp_m': [m.exp_m[t].value for t in m.T]}
 df = pd.DataFrame.from_dict(data)
+df.sort_index(axis=1, inplace=True)
 
 print(df)
 
