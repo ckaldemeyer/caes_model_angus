@@ -31,23 +31,15 @@ def cmp_area(m, t):
 
 
 def cmp_z1(m, t):
-    return(m.cmp_z[t] >= m.cav_Pi_min * m.cmp_y[t])
+    return(m.cmp_z[t] <= m.cav_Pi_o_max * m.cmp_y[t])
 
 
 def cmp_z2(m, t):
-    return(m.cmp_z[t] <= m.cav_Pi_max * m.cmp_y[t])
+    return(m.cmp_z[t] <= m.cav_Pi_o[t])
 
 
 def cmp_z3(m, t):
-    return(m.cmp_z[t] >= m.cav_Pi[t] - (1 - m.cmp_y[t]) * m.cav_Pi_max)
-
-
-def cmp_z4(m, t):
-    return(m.cmp_z[t] <= m.cav_Pi[t] - (1 - m.cmp_y[t]) * m.cav_Pi_min)
-
-
-def cmp_z5(m, t):
-    return(m.cmp_z[t] <= m.cav_Pi[t] + (1 - m.cmp_y[t]) * m.cav_Pi_max)
+    return(m.cmp_z[t] >= m.cav_Pi_o[t] - (1 - m.cmp_y[t]) * m.cav_Pi_o_max)
 
 
 def cav_pi(m, t):

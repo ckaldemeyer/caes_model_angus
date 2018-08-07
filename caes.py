@@ -32,6 +32,8 @@ m.cav_m_0 = po.Param(initialize=sca.loc['cav_m_0'].item())
 m.cav_Pi_0 = po.Param(initialize=sca.loc['cav_Pi_0'].item())
 m.cav_Pi_min = po.Param(initialize=sca.loc['cav_Pi_min'].item())
 m.cav_Pi_max = po.Param(initialize=sca.loc['cav_Pi_max'].item())
+m.cav_Pi_o_min = po.Param(initialize=sca.loc['cav_Pi_o_min'].item())
+m.cav_Pi_o_max = po.Param(initialize=sca.loc['cav_Pi_o_max'].item())
 m.mkt_C_el = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                seq['mkt_C_el'].values)))
 m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
@@ -43,8 +45,7 @@ m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca.loc['cmp_P_max'].item()))
 m.cmp_y = po.Var(m.T, domain=po.Binary)
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
-m.cmp_z = po.Var(m.T, domain=po.NonNegativeReals,
-                 bounds=(0, sca.loc['cav_Pi_max'].item()))
+m.cmp_z = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca.loc['exp_P_max'].item()))
 m.exp_y = po.Var(m.T, domain=po.Binary)
@@ -64,11 +65,9 @@ m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj_test)
 
 # Add constraints
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi)
-# m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
-# m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
-# m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
-# m.cmp_z4 = po.Constraint(m.T, rule=ru.cmp_z4)
-# m.cmp_z5 = po.Constraint(m.T, rule=ru.cmp_z5)
+m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
+m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
+m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
 m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area)
 m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min)
 m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max)
