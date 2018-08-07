@@ -27,7 +27,8 @@ def cmp_p_range_max(m, t):
 
 def cmp_area(m, t):
     return(m.cmp_m[t] == (
-        m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b * m.cmp_z[t]))
+        m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b * m.cmp_z[t])
+        + m.b * m.cav_Pi_min * m.cmp_y[t])
 
 
 def cmp_z1(m, t):
@@ -47,7 +48,7 @@ def cav_pi(m, t):
         return(m.cav_Pi[t] == m.cav_Pi_0)
     else:
         return(m.cav_Pi[t] == m.cav_Pi_min + m.cav_Pi_o[t-1] +
-               3600/m.cav_m_0 * (m.cmp_m[t] - m.exp_m[t]))
+               3600/m.cav_m_0 * (m.cmp_m[t-1] - m.exp_m[t-1]))
 
 
 def exp_p_range_min(m, t):
