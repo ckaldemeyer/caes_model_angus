@@ -31,7 +31,7 @@ m.exp_P_min = po.Param(initialize=sca.loc['exp_P_min'].item())
 m.cav_m_0 = po.Param(initialize=sca.loc['cav_m_0'].item())
 m.cav_Pi_0 = po.Param(initialize=sca.loc['cav_Pi_0'].item())
 m.cav_Pi_min = po.Param(initialize=sca.loc['cav_Pi_min'].item())
-m.cav_Pi_max = po.Param(initialize=sca.loc['cav_Pi_max'].item())
+#m.cav_Pi_max = po.Param(initialize=sca.loc['cav_Pi_max'].item())
 m.cav_Pi_o_min = po.Param(initialize=sca.loc['cav_Pi_o_min'].item())
 m.cav_Pi_o_max = po.Param(initialize=sca.loc['cav_Pi_o_max'].item())
 m.mkt_C_el = po.Param(m.T, initialize=dict(zip(seq.index.values,
@@ -51,9 +51,10 @@ m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
 m.exp_y = po.Var(m.T, domain=po.Binary)
 m.exp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_Q = po.Var(m.T, domain=po.NonNegativeReals)
-m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals,
-                  bounds=(sca.loc['cav_Pi_min'].item(),
-                          sca.loc['cav_Pi_max'].item()))
+# m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals,
+#                   bounds=(sca.loc['cav_Pi_min'].item(),
+#                           sca.loc['cav_Pi_max'].item()))
+m.cav_Pi = po.Var(m.T, domain=po.NonNegativeReals)
 m.cav_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
                     bounds=(sca.loc['cav_Pi_o_min'].item(),
                             sca.loc['cav_Pi_o_max'].item()))
@@ -104,6 +105,7 @@ df.sort_index(axis=1, inplace=True)
 
 print(df)
 
-# df.plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
-# plt.tight_layout()
-# plt.show()
+columns = ['cmp_P', 'exp_P', 'cav_Pi', 'cav_Pi_o']
+df[columns].plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
+plt.tight_layout()
+plt.show()
