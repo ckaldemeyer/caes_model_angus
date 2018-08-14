@@ -2,7 +2,6 @@
 import pyomo.environ as po
 
 
-# fuck you cord!
 
 # -----------------------------------------------------------------------------
 # ADD OBJECTIVE RULES
