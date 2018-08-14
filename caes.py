@@ -12,7 +12,7 @@ from pyomo.opt import SolverFactory
 # -----------------------------------------------------------------------------
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
 seq = pd.read_csv('sequences.csv', index_col=0)
-seq = seq.astype(np.float64).loc[0:24*7*4]
+seq = seq.astype(np.float64).loc[0:24*7]
 
 # -----------------------------------------------------------------------------
 # CREATE MODEL
@@ -111,7 +111,9 @@ data = {'C_el': seq['mkt_C_el'].values,
 
 df = pd.DataFrame.from_dict(data)
 df.sort_index(axis=1, inplace=True)
-print(df.head(10))
+
+#print(df.head(10))
+print('Objective: ', m.profit())
 
 # -----------------------------------------------------------------------------
 # PLOT RESULTS
