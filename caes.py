@@ -11,8 +11,8 @@ from pyomo.opt import SolverFactory
 # LOAD DATA
 # -----------------------------------------------------------------------------
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences_2014.csv', index_col=0)
-seq = seq.astype(np.float64).loc[0:336]
+seq = pd.read_csv('sequences.csv', index_col=0)
+seq = seq.astype(np.float64).loc[0:24*7]
 
 # -----------------------------------------------------------------------------
 # CREATE MODEL
@@ -95,7 +95,7 @@ opt = SolverFactory('gurobi')
 results = opt.solve(m, tee=True)
 
 # -----------------------------------------------------------------------------
-# LOAD AND PLOT RESULTS
+# PROCESS RESULTS
 # -----------------------------------------------------------------------------
 m.solutions.load_from(results)
 
@@ -111,8 +111,13 @@ data = {'C_el': seq['mkt_C_el'].values,
 
 df = pd.DataFrame.from_dict(data)
 df.sort_index(axis=1, inplace=True)
+print(df)
 
-columns = ['cmp_P', 'cmp_m', 'exp_P', 'exp_m', 'cav_Pi_o']
+# -----------------------------------------------------------------------------
+# PLOT RESULTS
+# -----------------------------------------------------------------------------
+# columns = ['cmp_P', 'cmp_m', 'exp_P', 'exp_m', 'cav_Pi_o']
+columns = ['C_el', 'cmp_P', 'exp_P', 'cav_Pi_o']
 df[columns].plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
 plt.tight_layout()
 plt.show()
