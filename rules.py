@@ -6,7 +6,7 @@ import pyomo.environ as po
 # -----------------------------------------------------------------------------
 
 
-def obj(m):
+def profit(m):
     expr = (sum(m.mkt_C_el[t] * m.cmp_P[t] +
                 m.mkt_C_fuel[t] * m.exp_Q[t] -
                 m.mkt_C_el[t] * m.exp_P[t]

@@ -67,8 +67,7 @@ m.cav_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
 # -----------------------------------------------------------------------------
 # ADD OBJECTIVE
 # -----------------------------------------------------------------------------
-
-m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj)
+m.profit = po.Objective(sense=po.minimize, rule=ru.profit)
 
 # -----------------------------------------------------------------------------
 # ADD CONSTRAINTS
@@ -112,7 +111,7 @@ data = {'C_el': seq['mkt_C_el'].values,
 
 df = pd.DataFrame.from_dict(data)
 df.sort_index(axis=1, inplace=True)
-print(df)
+print(df.head(10))
 
 # -----------------------------------------------------------------------------
 # PLOT RESULTS
