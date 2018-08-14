@@ -49,13 +49,19 @@ def cmp_z4(m, t):
 
 
 def cav_pi(m, t):
-    if t == min(m.T):
-        return(m.cav_Pi_o[t] == m.cav_Pi_o_0)
-    elif t >= 0:
+    if t > 1:
         return(m.cav_Pi_o[t] == (1-m.eta)*m.cav_Pi_o[t-1] +
                3600/m.cav_m_0*(m.cmp_m[t] - m.exp_m[t]))
     else:
         return po.Constraint.Skip
+
+
+def cav_pi_t0(m, t):
+    return(m.cav_Pi_o[min(m.T)] == m.cav_Pi_o_0)
+
+
+def cav_pi_tmax(m, t):
+    return(m.cav_Pi_o[max(m.T)] == m.cav_Pi_o_0)
 
 
 def exp_p_range_min(m, t):

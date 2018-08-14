@@ -74,11 +74,12 @@ m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj)
 # ADD CONSTRAINTS
 # -----------------------------------------------------------------------------
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi)
+m.cav_pi_t0 = po.Constraint(m.T, rule=ru.cav_pi_t0)
+m.cav_pi_tmax = po.Constraint(m.T, rule=ru.cav_pi_tmax)
 m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
 m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
 m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
 m.cmp_z4 = po.Constraint(m.T, rule=ru.cmp_z4)
-
 m.cmp_area = po.Constraint(m.T, rule=ru.cmp_area)
 m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min)
 m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max)
