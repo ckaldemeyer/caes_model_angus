@@ -2,7 +2,7 @@
 import pyomo.environ as po
 
 # -----------------------------------------------------------------------------
-#                           ADD OBJECTIVE RULES
+# ADD OBJECTIVE RULES
 # -----------------------------------------------------------------------------
 
 
@@ -14,6 +14,9 @@ def obj(m):
     return expr
 
 
+# -----------------------------------------------------------------------------
+# ADD CONSTRAINT RULES
+# -----------------------------------------------------------------------------
 
 def cmp_p_range_min(m, t):
     return(m.cmp_P[t] >= m.cmp_y[t] * m.cmp_P_min)
@@ -27,13 +30,6 @@ def cmp_area(m, t):
     return(m.cmp_m[t] == (
         m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b * m.cmp_z[t])
         + m.b * m.cav_Pi_min * m.cmp_y[t])
-
-#def cmp_area(m, t):
-#    return(m.cmp_m[t] == (
-#         m.a * m.cmp_P[t] ))
-
-
-
 
 
 def cmp_z1(m, t):
@@ -50,7 +46,6 @@ def cmp_z3(m, t):
 
 def cmp_z4(m, t):
     return(m.cmp_z[t] >= 0)
-
 
 
 def cav_pi(m, t):
@@ -81,5 +76,3 @@ def exp_area2(m, t):
 
 def cmp_exp_excl(m, t):
     return(m.cmp_y[t] + m.exp_y[t] <= 1)
-
-

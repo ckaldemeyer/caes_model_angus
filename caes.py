@@ -7,26 +7,25 @@ import pyomo.environ as po
 import matplotlib.pyplot as plt
 from pyomo.opt import SolverFactory
 
-
 # -----------------------------------------------------------------------------
-#                               LOAD DATA
+# LOAD DATA
 # -----------------------------------------------------------------------------
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences_2014.csv', index_col=0).astype(np.float64).loc[0:336]
-
+seq = pd.read_csv('sequences_2014.csv', index_col=0)
+seq = seq.astype(np.float64).loc[0:336]
 
 # -----------------------------------------------------------------------------
-#                            CREATE MODEL
+# CREATE MODEL
 # -----------------------------------------------------------------------------
 m = po.ConcreteModel()
 
 # -----------------------------------------------------------------------------
-#                            ADD SETS
+# ADD SETS
 # -----------------------------------------------------------------------------
 m.T = po.Set(initialize=seq.index.values)
 
 # -----------------------------------------------------------------------------
-#                            ADD PARAMETERS
+# ADD PARAMETERS
 # -----------------------------------------------------------------------------
 m.a0 = po.Param(initialize=sca.loc['a0'].item())
 m.a = po.Param(initialize=sca.loc['a'].item())
@@ -48,9 +47,8 @@ m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                  seq['mkt_C_fuel'].values)))
 m.eta = po.Param(initialize=sca.loc['eta'].item())
 
-
 # -----------------------------------------------------------------------------
-#                         ADD VARIABLES
+# ADD VARIABLES
 # -----------------------------------------------------------------------------
 m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca.loc['cmp_P_max'].item()))
@@ -66,15 +64,14 @@ m.cav_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
                     bounds=(sca.loc['cav_Pi_o_min'].item(),
                             sca.loc['cav_Pi_o_max'].item()))
 
-
 # -----------------------------------------------------------------------------
-#                            ADD OBJEKTIVE
+# ADD OBJECTIVE
 # -----------------------------------------------------------------------------
 
 m.profit_test = po.Objective(sense=po.minimize, rule=ru.obj)
 
 # -----------------------------------------------------------------------------
-#                          ADD CONSTRAINTS
+# ADD CONSTRAINTS
 # -----------------------------------------------------------------------------
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi)
 m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
@@ -91,17 +88,14 @@ m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min)
 m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max)
 m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
 
-#m.test = po.Constraint(m.T, rule=ru.test)
-
-
 # -----------------------------------------------------------------------------
-#                             SOLVE AND SAVE
+# SOLVE AND SAVE
 # -----------------------------------------------------------------------------
 opt = SolverFactory('gurobi')
 results = opt.solve(m, tee=True)
 
 # -----------------------------------------------------------------------------
-#                      LOAD AND PLOT RESULTS
+# LOAD AND PLOT RESULTS
 # -----------------------------------------------------------------------------
 m.solutions.load_from(results)
 
@@ -118,7 +112,7 @@ data = {'C_el': seq['mkt_C_el'].values,
 df = pd.DataFrame.from_dict(data)
 df.sort_index(axis=1, inplace=True)
 
-columns = ['cmp_P','cmp_m', 'exp_P','exp_m', 'cav_Pi_o']
+columns = ['cmp_P', 'cmp_m', 'exp_P', 'exp_m', 'cav_Pi_o']
 df[columns].plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
 plt.tight_layout()
 plt.show()
