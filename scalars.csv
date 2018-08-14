@@ -2,7 +2,7 @@ index,value
 a0,64.05
 a,1.71
 b,-1.04
-cav_Pi_o_0,20
+cav_Pi_o_0,1
 cav_Pi_min,40
 c1,0.7
 c2,0.11
@@ -12,5 +12,5 @@ cmp_P_min,30
 exp_P_max,60
 exp_P_min,30
 cav_Pi_o_min,0
-cav_Pi_o_max,100
+cav_Pi_o_max,40
 eta,0.00

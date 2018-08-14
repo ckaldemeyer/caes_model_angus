@@ -12,7 +12,7 @@ from pyomo.opt import SolverFactory
 # -----------------------------------------------------------------------------
 sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
 seq = pd.read_csv('sequences.csv', index_col=0)
-seq = seq.astype(np.float64).loc[0:24*7]
+seq = seq.astype(np.float64).loc[0:24*4]
 
 # -----------------------------------------------------------------------------
 # CREATE MODEL
@@ -41,8 +41,10 @@ m.cav_Pi_o_0 = po.Param(initialize=sca.loc['cav_Pi_o_0'].item())
 m.cav_Pi_min = po.Param(initialize=sca.loc['cav_Pi_min'].item())
 m.cav_Pi_o_min = po.Param(initialize=sca.loc['cav_Pi_o_min'].item())
 m.cav_Pi_o_max = po.Param(initialize=sca.loc['cav_Pi_o_max'].item())
-m.mkt_C_el = po.Param(m.T, initialize=dict(zip(seq.index.values,
-                                               seq['mkt_C_el'].values)))
+m.mkt_C_el_cmp = po.Param(m.T, initialize=dict(zip(seq.index.values,
+                                               seq['mkt_C_el_cmp'].values)))
+m.mkt_C_el_exp = po.Param(m.T, initialize=dict(zip(seq.index.values,
+                                               seq['mkt_C_el_exp'].values)))
 m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                  seq['mkt_C_fuel'].values)))
 m.eta = po.Param(initialize=sca.loc['eta'].item())
@@ -74,7 +76,7 @@ m.profit = po.Objective(sense=po.minimize, rule=ru.profit)
 # -----------------------------------------------------------------------------
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi)
 m.cav_pi_t0 = po.Constraint(m.T, rule=ru.cav_pi_t0)
-m.cav_pi_tmax = po.Constraint(m.T, rule=ru.cav_pi_tmax)
+# m.cav_pi_tmax = po.Constraint(m.T, rule=ru.cav_pi_tmax)
 m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
 m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
 m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
@@ -92,14 +94,15 @@ m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
 # SOLVE AND SAVE
 # -----------------------------------------------------------------------------
 opt = SolverFactory('gurobi')
-results = opt.solve(m, tee=True)
+results = opt.solve(m, tee=False)
 
 # -----------------------------------------------------------------------------
 # PROCESS RESULTS
 # -----------------------------------------------------------------------------
 m.solutions.load_from(results)
 
-data = {'C_el': seq['mkt_C_el'].values,
+data = {'C_el_cmp': seq['mkt_C_el_cmp'].values,
+        'C_el_exp': seq['mkt_C_el_exp'].values,
         'cmp_P': [m.cmp_P[t].value for t in m.T],
         'cmp_y': [m.cmp_y[t].value for t in m.T],
         'exp_P': [m.exp_P[t].value for t in m.T],
@@ -112,14 +115,14 @@ data = {'C_el': seq['mkt_C_el'].values,
 df = pd.DataFrame.from_dict(data)
 df.sort_index(axis=1, inplace=True)
 
-#print(df.head(10))
 print('Objective: ', m.profit())
+print(df.sum())
 
 # -----------------------------------------------------------------------------
 # PLOT RESULTS
 # -----------------------------------------------------------------------------
 # columns = ['cmp_P', 'cmp_m', 'exp_P', 'exp_m', 'cav_Pi_o']
-columns = ['C_el', 'cmp_P', 'exp_P', 'cav_Pi_o']
+columns = ['C_el_cmp', 'C_el_exp', 'cmp_P', 'exp_P', 'cav_Pi_o']
 df[columns].plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
 plt.tight_layout()
 plt.show()
