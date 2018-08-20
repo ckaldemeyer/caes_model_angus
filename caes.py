@@ -10,8 +10,8 @@ from pyomo.opt import SolverFactory
 # -----------------------------------------------------------------------------
 # LOAD DATA
 # -----------------------------------------------------------------------------
-sca = pd.read_csv('scalars.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences.csv', index_col=0)
+sca = pd.read_csv('scalars_huntorf.csv', index_col=0).astype(np.float64)['value']
+seq = pd.read_csv('sequences_huntorf.csv', index_col=0)
 seq = seq.astype(np.float64).loc[0:24*4]
 
 # -----------------------------------------------------------------------------
