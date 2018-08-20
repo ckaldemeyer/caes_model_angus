@@ -92,7 +92,7 @@ m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max)
 m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
 
 # -----------------------------------------------------------------------------
-# SOLVE AND SAVE
+# SOLVE AND SAVE RESULTS
 # -----------------------------------------------------------------------------
 opt = SolverFactory('gurobi')
 results = opt.solve(m, tee=False)
