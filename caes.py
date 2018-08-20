@@ -10,9 +10,10 @@ from pyomo.opt import SolverFactory
 # -----------------------------------------------------------------------------
 # LOAD DATA
 # -----------------------------------------------------------------------------
-sca = pd.read_csv('scalars_huntorf.csv', index_col=0).astype(np.float64)['value']
-seq = pd.read_csv('sequences_huntorf.csv', index_col=0)
-seq = seq.astype(np.float64).loc[0:24*4]
+sca = pd.read_csv(
+    'scalars_huntorf.csv', index_col=0)['value'].astype(np.float64).to_dict()
+seq = pd.read_csv(
+    'sequences_huntorf.csv', index_col=0).astype(np.float64).loc[0:24*4]
 
 # -----------------------------------------------------------------------------
 # CREATE MODEL
@@ -27,44 +28,44 @@ m.T = po.Set(initialize=seq.index.values)
 # -----------------------------------------------------------------------------
 # ADD PARAMETERS
 # -----------------------------------------------------------------------------
-m.a0 = po.Param(initialize=sca.loc['a0'].item())
-m.a = po.Param(initialize=sca.loc['a'].item())
-m.b = po.Param(initialize=sca.loc['b'].item())
-m.c1 = po.Param(initialize=sca.loc['c1'].item())
-m.c2 = po.Param(initialize=sca.loc['c2'].item())
-m.cav_m_0 = po.Param(initialize=sca.loc['cav_m_0'].item())
-m.cmp_P_max = po.Param(initialize=sca.loc['cmp_P_max'].item())
-m.cmp_P_min = po.Param(initialize=sca.loc['cmp_P_min'].item())
-m.exp_P_max = po.Param(initialize=sca.loc['exp_P_max'].item())
-m.exp_P_min = po.Param(initialize=sca.loc['exp_P_min'].item())
-m.cav_Pi_o_0 = po.Param(initialize=sca.loc['cav_Pi_o_0'].item())
-m.cav_Pi_min = po.Param(initialize=sca.loc['cav_Pi_min'].item())
-m.cav_Pi_o_min = po.Param(initialize=sca.loc['cav_Pi_o_min'].item())
-m.cav_Pi_o_max = po.Param(initialize=sca.loc['cav_Pi_o_max'].item())
+m.a0 = po.Param(initialize=sca['a0'])
+m.a = po.Param(initialize=sca['a'])
+m.b = po.Param(initialize=sca['b'])
+m.c1 = po.Param(initialize=sca['c1'])
+m.c2 = po.Param(initialize=sca['c2'])
+m.cav_m_0 = po.Param(initialize=sca['cav_m_0'])
+m.cmp_P_max = po.Param(initialize=sca['cmp_P_max'])
+m.cmp_P_min = po.Param(initialize=sca['cmp_P_min'])
+m.exp_P_max = po.Param(initialize=sca['exp_P_max'])
+m.exp_P_min = po.Param(initialize=sca['exp_P_min'])
+m.cav_Pi_o_0 = po.Param(initialize=sca['cav_Pi_o_0'])
+m.cav_Pi_min = po.Param(initialize=sca['cav_Pi_min'])
+m.cav_Pi_o_min = po.Param(initialize=sca['cav_Pi_o_min'])
+m.cav_Pi_o_max = po.Param(initialize=sca['cav_Pi_o_max'])
 m.mkt_C_el_cmp = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                seq['mkt_C_el_cmp'].values)))
 m.mkt_C_el_exp = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                seq['mkt_C_el_exp'].values)))
 m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                  seq['mkt_C_fuel'].values)))
-m.eta = po.Param(initialize=sca.loc['eta'].item())
+m.eta = po.Param(initialize=sca['eta'])
 
 # -----------------------------------------------------------------------------
 # ADD VARIABLES
 # -----------------------------------------------------------------------------
 m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
-                 bounds=(0, sca.loc['cmp_P_max'].item()))
+                 bounds=(0, sca['cmp_P_max']))
 m.cmp_y = po.Var(m.T, domain=po.Binary)
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_z = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
-                 bounds=(0, sca.loc['exp_P_max'].item()))
+                 bounds=(0, sca['exp_P_max']))
 m.exp_y = po.Var(m.T, domain=po.Binary)
 m.exp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_Q = po.Var(m.T, domain=po.NonNegativeReals)
 m.cav_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
-                    bounds=(sca.loc['cav_Pi_o_min'].item(),
-                            sca.loc['cav_Pi_o_max'].item()))
+                    bounds=(sca['cav_Pi_o_min'],
+                            sca['cav_Pi_o_max']))
 
 # -----------------------------------------------------------------------------
 # ADD OBJECTIVE
