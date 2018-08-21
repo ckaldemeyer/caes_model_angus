@@ -1,4 +1,4 @@
-"""Simple test model for Compressed Air Energy Storages (CAES)."""
+"""Generic model for diabatic Compressed Air Energy Storages (CAES)."""
 
 import numpy as np
 import pandas as pd
@@ -7,27 +7,20 @@ import pyomo.environ as po
 import matplotlib.pyplot as plt
 from pyomo.opt import SolverFactory
 
-# -----------------------------------------------------------------------------
-# LOAD DATA
-# -----------------------------------------------------------------------------
+
+# Load data
 sca = pd.read_csv(
     'scalars_huntorf.csv', index_col=0)['value'].astype(np.float64).to_dict()
 seq = pd.read_csv(
     'sequences_huntorf.csv', index_col=0).astype(np.float64).loc[0:24*4]
 
-# -----------------------------------------------------------------------------
-# CREATE MODEL
-# -----------------------------------------------------------------------------
+# Create model
 m = po.ConcreteModel()
 
-# -----------------------------------------------------------------------------
-# ADD SETS
-# -----------------------------------------------------------------------------
+# Add sets
 m.T = po.Set(initialize=seq.index.values)
 
-# -----------------------------------------------------------------------------
-# ADD PARAMETERS
-# -----------------------------------------------------------------------------
+# Add parameters
 m.a0 = po.Param(initialize=sca['a0'])
 m.a = po.Param(initialize=sca['a'])
 m.b = po.Param(initialize=sca['b'])
@@ -50,9 +43,7 @@ m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                  seq['mkt_C_fuel'].values)))
 m.eta = po.Param(initialize=sca['eta'])
 
-# -----------------------------------------------------------------------------
-# ADD VARIABLES
-# -----------------------------------------------------------------------------
+# Add variables
 m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca['cmp_P_max']))
 m.cmp_y = po.Var(m.T, domain=po.Binary)
@@ -67,17 +58,13 @@ m.cav_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
                     bounds=(sca['cav_Pi_o_min'],
                             sca['cav_Pi_o_max']))
 
-# -----------------------------------------------------------------------------
-# ADD OBJECTIVE
-# -----------------------------------------------------------------------------
+# Add objective
 m.profit = po.Objective(sense=po.minimize, rule=ru.profit)
 
-# -----------------------------------------------------------------------------
-# ADD CONSTRAINTS
-# -----------------------------------------------------------------------------
+# Add constraints
 m.cav_pi = po.Constraint(m.T, rule=ru.cav_pi)
 m.cav_pi_t0 = po.Constraint(m.T, rule=ru.cav_pi_t0)
-# m.cav_pi_tmax = po.Constraint(m.T, rule=ru.cav_pi_tmax)
+m.cav_pi_tmax = po.Constraint(m.T, rule=ru.cav_pi_tmax)
 m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
 m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
 m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
@@ -91,17 +78,12 @@ m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min)
 m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max)
 m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
 
-# -----------------------------------------------------------------------------
-# SOLVE AND SAVE RESULTS
-# -----------------------------------------------------------------------------
+# Solve and save results
 opt = SolverFactory('gurobi')
 results = opt.solve(m, tee=False)
 
-# -----------------------------------------------------------------------------
-# PROCESS RESULTS
-# -----------------------------------------------------------------------------
+# Process results
 m.solutions.load_from(results)
-
 data = {'C_el_cmp': seq['mkt_C_el_cmp'].values,
         'C_el_exp': seq['mkt_C_el_exp'].values,
         'cmp_P': [m.cmp_P[t].value for t in m.T],
@@ -112,17 +94,12 @@ data = {'C_el_cmp': seq['mkt_C_el_cmp'].values,
         'cav_Pi_o': [m.cav_Pi_o[t].value for t in m.T],
         'cmp_m': [m.cmp_m[t].value for t in m.T],
         'exp_m': [m.exp_m[t].value for t in m.T]}
-
 df = pd.DataFrame.from_dict(data)
 df.sort_index(axis=1, inplace=True)
-
 print('Objective: ', m.profit())
 print(df.sum())
 
-# -----------------------------------------------------------------------------
-# PLOT RESULTS
-# -----------------------------------------------------------------------------
-# columns = ['cmp_P', 'cmp_m', 'exp_P', 'exp_m', 'cav_Pi_o']
+# Plot results
 columns = ['C_el_cmp', 'C_el_exp', 'cmp_P', 'exp_P', 'cav_Pi_o']
 df[columns].plot(kind='line', drawstyle='steps-post', subplots=True, grid=True)
 plt.tight_layout()
