@@ -26,7 +26,7 @@ def cmp_p_range_max(m, t):
 def cmp_area(m, t):
     """Relationship between power, mass flow and casern pressure."""
     return(m.cmp_m[t] == (
-        m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b *
+        m.a * m.cmp_y[t] + m.b * m.cmp_P[t] + m.c *
         (m.cmp_z[t] + m.cas_Pi_min * m.cmp_y[t])))
 
 
@@ -81,12 +81,12 @@ def exp_p_range_max(m, t):
 
 def exp_area1(m, t):
     """Relationship between power and mass flow."""
-    return(m.exp_m[t] == m.exp_P[t] / m.c1)
+    return(m.exp_m[t] == m.exp_P[t] / m.d)
 
 
 def exp_area2(m, t):
     """Relationship between heat flow and mass flow."""
-    return(m.exp_Q[t] == m.exp_m[t] * m.c2)
+    return(m.exp_Q[t] == m.exp_m[t] * m.e)
 
 
 def cmp_exp_excl(m, t):
