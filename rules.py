@@ -26,8 +26,8 @@ def cmp_p_range_max(m, t):
 def cmp_area(m, t):
     """Relationship between power, mass flow and casern pressure."""
     return(m.cmp_m[t] == (
-        m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b * m.cmp_z[t]
-        + m.b * m.cas_Pi_min * m.cmp_y[t]))
+        m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b *
+        (m.cmp_z[t] + m.cas_Pi_min * m.cmp_y[t])))
 
 
 def cmp_z1(m, t):
