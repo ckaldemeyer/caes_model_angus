@@ -51,7 +51,7 @@ def cmp_z4(m, t):
 
 
 def cas_pi(m, t):
-    """casern balance for all timesteps but the first."""
+    """Cavern balance for all timesteps but the first."""
     if t > 1:
         return(m.cas_Pi_o[t] == (1-m.eta)*m.cas_Pi_o[t-1] +
                3600/m.cas_m_0*(m.cmp_m[t] - m.exp_m[t]))
@@ -60,12 +60,12 @@ def cas_pi(m, t):
 
 
 def cas_pi_t0(m, t):
-    """casern level in first and last timestep are set equal."""
+    """Cavern level in first and last timestep are set equal."""
     return(m.cas_Pi_o[min(m.T)] == m.cas_Pi_o_0)
 
 
 def cas_pi_tmax(m, t):
-    """casern level in first and last timestep are set equal."""
+    """Cavern level in first and last timestep are set equal."""
     return(m.cas_Pi_o[max(m.T)] == m.cas_Pi_o_0)
 
 
