@@ -24,49 +24,49 @@ def cmp_p_range_max(m, t):
 
 
 def cmp_area(m, t):
-    """Relationship between power, mass flow and cavern pressure."""
+    """Relationship between power, mass flow and casern pressure."""
     return(m.cmp_m[t] == (
         m.a0 * m.cmp_y[t] + m.a * m.cmp_P[t] + m.b * m.cmp_z[t]
-        + m.b * m.cav_Pi_min * m.cmp_y[t]))
+        + m.b * m.cas_Pi_min * m.cmp_y[t]))
 
 
 def cmp_z1(m, t):
-    """Linearization of variable product (cav_Pi_o * cmp_y)."""
-    return(m.cmp_z[t] <= m.cav_Pi_o_max * m.cmp_y[t])
+    """Linearization of variable product (cas_Pi_o * cmp_y)."""
+    return(m.cmp_z[t] <= m.cas_Pi_o_max * m.cmp_y[t])
 
 
 def cmp_z2(m, t):
-    """Linearization of variable product (cav_Pi_o * cmp_y)."""
-    return(m.cmp_z[t] <= m.cav_Pi_o[t])
+    """Linearization of variable product (cas_Pi_o * cmp_y)."""
+    return(m.cmp_z[t] <= m.cas_Pi_o[t])
 
 
 def cmp_z3(m, t):
-    """Linearization of variable product (cav_Pi_o * cmp_y)."""
-    return(m.cmp_z[t] >= m.cav_Pi_o[t] - (1 - m.cmp_y[t]) * m.cav_Pi_o_max)
+    """Linearization of variable product (cas_Pi_o * cmp_y)."""
+    return(m.cmp_z[t] >= m.cas_Pi_o[t] - (1 - m.cmp_y[t]) * m.cas_Pi_o_max)
 
 
 def cmp_z4(m, t):
-    """Linearization of variable product (cav_Pi_o * cmp_y)."""
+    """Linearization of variable product (cas_Pi_o * cmp_y)."""
     return(m.cmp_z[t] >= 0)
 
 
-def cav_pi(m, t):
-    """Cavern balance for all timesteps but the first."""
+def cas_pi(m, t):
+    """casern balance for all timesteps but the first."""
     if t > 1:
-        return(m.cav_Pi_o[t] == (1-m.eta)*m.cav_Pi_o[t-1] +
-               3600/m.cav_m_0*(m.cmp_m[t] - m.exp_m[t]))
+        return(m.cas_Pi_o[t] == (1-m.eta)*m.cas_Pi_o[t-1] +
+               3600/m.cas_m_0*(m.cmp_m[t] - m.exp_m[t]))
     else:
         return po.Constraint.Skip
 
 
-def cav_pi_t0(m, t):
-    """Cavern level in first and last timestep are set equal."""
-    return(m.cav_Pi_o[min(m.T)] == m.cav_Pi_o_0)
+def cas_pi_t0(m, t):
+    """casern level in first and last timestep are set equal."""
+    return(m.cas_Pi_o[min(m.T)] == m.cas_Pi_o_0)
 
 
-def cav_pi_tmax(m, t):
-    """Cavern level in first and last timestep are set equal."""
-    return(m.cav_Pi_o[max(m.T)] == m.cav_Pi_o_0)
+def cas_pi_tmax(m, t):
+    """casern level in first and last timestep are set equal."""
+    return(m.cas_Pi_o[max(m.T)] == m.cas_Pi_o_0)
 
 
 def exp_p_range_min(m, t):
