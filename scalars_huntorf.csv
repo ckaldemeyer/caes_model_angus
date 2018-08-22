@@ -4,8 +4,8 @@ cmp_P_min,30
 cmp_a,64.05
 cmp_b,1.71
 cmp_c,-1.04
-cmp_d,1
-cmp_eta,0.00
+cmp_d,2
+cmp_eta,0
 cas_Pi_o_min,0
 cas_Pi_o_max,40
 cas_m_0,428734.4
