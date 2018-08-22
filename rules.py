@@ -26,13 +26,13 @@ def cmp_p_range_max(m, t):
 def cmp_area1(m, t):
     """Relationship between power, mass flow and casern pressure."""
     return(m.cmp_m[t] == (
-        m.a * m.cmp_y[t] + m.b * m.cmp_P[t] + m.c *
+        m.cmp_a * m.cmp_y[t] + m.cmp_b * m.cmp_P[t] + m.cmp_c *
         (m.cmp_z[t] + m.cas_Pi_min * m.cmp_y[t])))
 
 
 def cmp_area2(m, t):
     """Relationship between heat flow and mass flow."""
-    return(m.cmp_Q[t] == m.cmp_m[t] * m.d)
+    return(m.cmp_Q[t] == m.cmp_m[t] * m.cmp_d)
 
 
 def cmp_z1(m, t):
@@ -58,7 +58,7 @@ def cmp_z4(m, t):
 def cas_pi(m, t):
     """Cavern balance for all timesteps but the first."""
     if t > 1:
-        return(m.cas_Pi_o[t] == (1-m.eta)*m.cas_Pi_o[t-1] +
+        return(m.cas_Pi_o[t] == (1-m.cmp_eta)*m.cas_Pi_o[t-1] +
                3600/m.cas_m_0*(m.cmp_m[t] - m.exp_m[t]))
     else:
         return po.Constraint.Skip
@@ -86,12 +86,12 @@ def exp_p_range_max(m, t):
 
 def exp_area1(m, t):
     """Relationship between power and mass flow."""
-    return(m.exp_m[t] == m.exp_P[t] / m.e)
+    return(m.exp_m[t] == m.exp_P[t] / m.exp_a)
 
 
 def exp_area2(m, t):
     """Relationship between heat flow and mass flow."""
-    return(m.exp_Q[t] == m.exp_m[t] * m.f)
+    return(m.exp_Q[t] == m.exp_m[t] * m.exp_b)
 
 
 def cmp_exp_excl(m, t):

@@ -21,28 +21,28 @@ m = po.ConcreteModel()
 m.T = po.Set(initialize=seq.index.values)
 
 # Add parameters
-m.a = po.Param(initialize=sca['a'])
-m.b = po.Param(initialize=sca['b'])
-m.c = po.Param(initialize=sca['c'])
-m.d = po.Param(initialize=sca['d'])
-m.e = po.Param(initialize=sca['e'])
-m.f = po.Param(initialize=sca['f'])
-m.cas_m_0 = po.Param(initialize=sca['cas_m_0'])
 m.cmp_P_max = po.Param(initialize=sca['cmp_P_max'])
 m.cmp_P_min = po.Param(initialize=sca['cmp_P_min'])
-m.exp_P_max = po.Param(initialize=sca['exp_P_max'])
-m.exp_P_min = po.Param(initialize=sca['exp_P_min'])
+m.cmp_a = po.Param(initialize=sca['cmp_a'])
+m.cmp_b = po.Param(initialize=sca['cmp_b'])
+m.cmp_c = po.Param(initialize=sca['cmp_c'])
+m.cmp_d = po.Param(initialize=sca['cmp_d'])
+m.cmp_eta = po.Param(initialize=sca['cmp_eta'])
+m.cas_m_0 = po.Param(initialize=sca['cas_m_0'])
 m.cas_Pi_o_0 = po.Param(initialize=sca['cas_Pi_o_0'])
 m.cas_Pi_min = po.Param(initialize=sca['cas_Pi_min'])
 m.cas_Pi_o_min = po.Param(initialize=sca['cas_Pi_o_min'])
 m.cas_Pi_o_max = po.Param(initialize=sca['cas_Pi_o_max'])
+m.exp_P_max = po.Param(initialize=sca['exp_P_max'])
+m.exp_P_min = po.Param(initialize=sca['exp_P_min'])
+m.exp_a = po.Param(initialize=sca['exp_a'])
+m.exp_b = po.Param(initialize=sca['exp_b'])
 m.mkt_C_el_cmp = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                seq['mkt_C_el_cmp'].values)))
 m.mkt_C_el_exp = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                seq['mkt_C_el_exp'].values)))
 m.mkt_C_fuel = po.Param(m.T, initialize=dict(zip(seq.index.values,
                                                  seq['mkt_C_fuel'].values)))
-m.eta = po.Param(initialize=sca['eta'])
 
 # Add variables
 m.cmp_P = po.Var(m.T, domain=po.NonNegativeReals,
@@ -51,34 +51,34 @@ m.cmp_Q = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_y = po.Var(m.T, domain=po.Binary)
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_z = po.Var(m.T, domain=po.NonNegativeReals)
+m.cas_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
+                    bounds=(sca['cas_Pi_o_min'],
+                            sca['cas_Pi_o_max']))
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca['exp_P_max']))
 m.exp_y = po.Var(m.T, domain=po.Binary)
 m.exp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.exp_Q = po.Var(m.T, domain=po.NonNegativeReals)
-m.cas_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
-                    bounds=(sca['cas_Pi_o_min'],
-                            sca['cas_Pi_o_max']))
 
 # Add objective
 m.profit = po.Objective(sense=po.minimize, rule=ru.profit)
 
 # Add constraints
-m.cas_pi = po.Constraint(m.T, rule=ru.cas_pi)
-m.cas_pi_t0 = po.Constraint(m.T, rule=ru.cas_pi_t0)
-m.cas_pi_tmax = po.Constraint(m.T, rule=ru.cas_pi_tmax)
+m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min)
+m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max)
 m.cmp_area1 = po.Constraint(m.T, rule=ru.cmp_area1)
 m.cmp_area2 = po.Constraint(m.T, rule=ru.cmp_area2)
 m.cmp_z1 = po.Constraint(m.T, rule=ru.cmp_z1)
 m.cmp_z2 = po.Constraint(m.T, rule=ru.cmp_z2)
 m.cmp_z3 = po.Constraint(m.T, rule=ru.cmp_z3)
 m.cmp_z4 = po.Constraint(m.T, rule=ru.cmp_z4)
-m.cmp_p_range_min = po.Constraint(m.T, rule=ru.cmp_p_range_min)
-m.cmp_p_range_max = po.Constraint(m.T, rule=ru.cmp_p_range_max)
-m.exp_area1 = po.Constraint(m.T, rule=ru.exp_area1)
-m.exp_area2 = po.Constraint(m.T, rule=ru.exp_area2)
+m.cas_pi = po.Constraint(m.T, rule=ru.cas_pi)
+m.cas_pi_t0 = po.Constraint(m.T, rule=ru.cas_pi_t0)
+m.cas_pi_tmax = po.Constraint(m.T, rule=ru.cas_pi_tmax)
 m.exp_p_range_min = po.Constraint(m.T, rule=ru.exp_p_range_min)
 m.exp_p_range_max = po.Constraint(m.T, rule=ru.exp_p_range_max)
+m.exp_area1 = po.Constraint(m.T, rule=ru.exp_area1)
+m.exp_area2 = po.Constraint(m.T, rule=ru.exp_area2)
 m.cmp_exp_excl = po.Constraint(m.T, rule=ru.cmp_exp_excl)
 
 # Solve and save results
