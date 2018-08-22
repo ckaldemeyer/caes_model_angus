@@ -4,8 +4,9 @@ b,1.71
 c,-1.04
 cas_Pi_o_0,1
 cas_Pi_min,40
-d,0.7
-e,0.11
+d,1
+e,0.7
+f,0.11
 cas_m_0,428734.4
 cmp_P_max,60
 cmp_P_min,30
