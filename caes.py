@@ -31,7 +31,6 @@ m.cmp_eta = po.Param(initialize=sca['cmp_eta'])
 m.cas_m_0 = po.Param(initialize=sca['cas_m_0'])
 m.cas_Pi_o_0 = po.Param(initialize=sca['cas_Pi_o_0'])
 m.cas_Pi_min = po.Param(initialize=sca['cas_Pi_min'])
-m.cas_Pi_o_min = po.Param(initialize=sca['cas_Pi_o_min'])
 m.cas_Pi_o_max = po.Param(initialize=sca['cas_Pi_o_max'])
 m.exp_P_max = po.Param(initialize=sca['exp_P_max'])
 m.exp_P_min = po.Param(initialize=sca['exp_P_min'])
@@ -52,8 +51,7 @@ m.cmp_y = po.Var(m.T, domain=po.Binary)
 m.cmp_m = po.Var(m.T, domain=po.NonNegativeReals)
 m.cmp_z = po.Var(m.T, domain=po.NonNegativeReals)
 m.cas_Pi_o = po.Var(m.T, domain=po.NonNegativeReals,
-                    bounds=(sca['cas_Pi_o_min'],
-                            sca['cas_Pi_o_max']))
+                    bounds=(0, sca['cas_Pi_o_max']))
 m.exp_P = po.Var(m.T, domain=po.NonNegativeReals,
                  bounds=(0, sca['exp_P_max']))
 m.exp_y = po.Var(m.T, domain=po.Binary)

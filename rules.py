@@ -57,7 +57,7 @@ def cmp_z4(m, t):
 
 def cas_pi(m, t):
     """Cavern balance for all timesteps but the first."""
-    if t > 1:
+    if t > min(m.T):
         return(m.cas_Pi_o[t] == (1-m.cmp_eta)*m.cas_Pi_o[t-1] +
                3600/m.cas_m_0*(m.cmp_m[t] - m.exp_m[t]))
     else:
